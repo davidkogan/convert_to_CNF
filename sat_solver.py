@@ -1,5 +1,5 @@
-# TODO: Your name, Cornell NetID
-# TODO: Your Partner's name, Cornell NetID
+# David Kogan, dk448
+# Andrew Palmer, ajp294
 
 from helpers import *
 from cnf_sat_solver import dpll
@@ -87,7 +87,51 @@ def parse_iff_implies(s):
 # you may also use the is_symbol() helper function to determine if you have encountered a propositional symbol
 def deMorgansLaw(s):
     # TODO: write your code here, change the return values accordingly
-    return Expr(s.op, *args)
+
+    def helper(s):
+        if not s:
+            return None
+
+        op = s.op
+        args = s.args
+
+        if is_symbol(op):
+            return Expr(op)
+
+        else:
+            #Or
+            if op == '|':
+                left = helper(args[0])
+                right = helper(args[1])
+                return left.__or__(right)
+            #And
+            elif op == '&':
+                left = helper(args[0])
+                right = helper(args[1])
+                return left.__and__(right)
+            #Not
+            elif op == '~':
+                nextop = args[0].op
+                nextargs = args[0].args
+                if is_symbol(nextop):
+                    return Expr(nextop).__invert__()
+                elif nextop == '~':
+                    return (helper(nextargs[0]))
+                elif nextop == '|':
+                    left = helper(nextargs[0])
+                    right = helper(nextargs[1])
+                    newleft = helper(Expr('~', expr(left)))
+                    newright = helper(Expr('~', expr(right)))
+                    return newleft.__and__(newright)
+                elif nextop == '&':
+                    left = helper(nextargs[0])
+                    right = helper(nextargs[1])
+                    newleft = helper(Expr('~', expr(left)))
+                    newright = helper(Expr('~', expr(right)))
+                    return newleft.__or__(newright)
+
+    return helper(s)
+        
 
 # ______________________________________________________________________________
 # STEP3: use Distibutive Law to distribute and('&') over or('|')
@@ -128,6 +172,8 @@ def SAT_solver(s, heuristic=no_heuristic):
 
 
 if __name__ == "__main__":
+
+    print(deMorgansLaw(expr('~~((~A & B) | (C & D))')))
 
 # Initialization
     A, B, C, D, E, F = expr('A, B, C, D, E, F')

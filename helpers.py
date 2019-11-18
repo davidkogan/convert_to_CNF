@@ -348,16 +348,6 @@ def first(iterable, default=None):
 
 if __name__ == "__main__":
 
-    s = expr('A <=> B')
-    args = s.args
-    left = Expr(args[0])
-    right = Expr(args[1])
-    newleft = Expr('==>', expr(left), expr(right))
-    newright = Expr('==>', expr(right), expr(left))
-    s = newleft.__and__(newright)
-    print(s.op)
-    print(s.args)
+    s = expr(Expr('~', expr('(~A & B)')))
+    print(s)
     
-
-    
-
