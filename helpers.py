@@ -348,6 +348,7 @@ def first(iterable, default=None):
 
 if __name__ == "__main__":
 
-    s = expr(Expr('~', expr('(~A & B)')))
-    print(s)
+    s = expr('A & (B | C)')
+    print(s.op)
+    print(s.args)
     

@@ -146,7 +146,44 @@ def deMorgansLaw(s):
 # Hint: you may use the associate() helper function to help you flatten the expression
 def distibutiveLaw(s):
     # TODO: write your code here, change the return values accordingly
-    return Expr(s.op, *args)
+
+    def helper(s):
+        if not s:
+            return None
+
+        op = s.op
+        args = s.args
+
+        if is_symbol(op):
+            return Expr(op)
+
+        else:
+            #Regular And
+            if op == '&':
+                #And with Or
+                if args[1].op == '|':
+                    leftleft = helper(args[0])
+                    rightleft = helper(args[1].args[0])
+                    rightright = helper(args[1].args[1])
+                    return (leftleft.__and__(rightleft)).__or__(leftleft.__and__(rightright))
+                elif args[0].op == '|':
+                    leftleft = helper(args[0].args[0])
+                    leftright = helper(args[0].args[1])
+                    rightright = helper(args[1])
+                    return (leftleft.__and__(rightright)).__or__(leftright.__and__(rightright))
+                #Regular And
+                else:
+                    left = helper(args[0])
+                    right = helper(args[1])
+                    return left.__and__(right)
+            #Regular Or
+            elif op == '|':
+                left = helper(args[0])
+                right = helper(args[1])
+                return left.__or__(right)
+
+
+    return helper(s)
 
 
 # ______________________________________________________________________________
@@ -173,7 +210,7 @@ def SAT_solver(s, heuristic=no_heuristic):
 
 if __name__ == "__main__":
 
-    print(deMorgansLaw(expr('~~((~A & B) | (C & D))')))
+    print(distibutiveLaw(expr('(A | B) & (C | D)')))
 
 # Initialization
     A, B, C, D, E, F = expr('A, B, C, D, E, F')
