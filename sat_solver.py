@@ -158,6 +158,9 @@ def distibutiveLaw(s):
             return Expr(op)
 
         else:
+            #Not
+            if op == '~':
+                return (helper(args[0])).__invert__()
             #Regular And
             if op == '&':
                 #And with Or
@@ -165,12 +168,12 @@ def distibutiveLaw(s):
                     leftleft = helper(args[0])
                     rightleft = helper(args[1].args[0])
                     rightright = helper(args[1].args[1])
-                    return (leftleft.__and__(rightleft)).__or__(leftleft.__and__(rightright))
+                    return helper((leftleft.__and__(rightleft)).__or__(leftleft.__and__(rightright)))
                 elif args[0].op == '|':
                     leftleft = helper(args[0].args[0])
                     leftright = helper(args[0].args[1])
                     rightright = helper(args[1])
-                    return (leftleft.__and__(rightright)).__or__(leftright.__and__(rightright))
+                    return helper((leftleft.__and__(rightright)).__or__(leftright.__and__(rightright)))
                 #Regular And
                 else:
                     left = helper(args[0])
@@ -209,8 +212,6 @@ def SAT_solver(s, heuristic=no_heuristic):
 
 
 if __name__ == "__main__":
-
-    print(distibutiveLaw(expr('(A | B) & (C | D)')))
 
 # Initialization
     A, B, C, D, E, F = expr('A, B, C, D, E, F')

@@ -344,11 +344,4 @@ def extend(s, var, val):
 def first(iterable, default=None):
     # Return the first element of an iterable; or default.
     return next(iter(iterable), default)
-
-
-if __name__ == "__main__":
-
-    s = expr('A & (B | C)')
-    print(s.op)
-    print(s.args)
     
